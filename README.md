@@ -1,202 +1,73 @@
----
+# 📋 Task Manager System (Multi-Tenant)
 
-# Task Manager
+![Backend](https://img.shields.io/badge/Backend-Node.js-green)
+![Database](https://img.shields.io/badge/Database-MySQL-orange)
+![Auth](https://img.shields.io/badge/Auth-JWT-blueviolet)
 
-Ein einfaches Aufgabenverwaltungssystem mit Rollenunterstützung (Admin, Manager, Employee) und Mandantenfähigkeit (Unternehmen).
-
-Der Service ermöglicht das Erstellen von Unternehmen, die Verwaltung von Benutzern und das Zuweisen von Aufgaben an Mitarbeiter.
-
----
-
-## 📦 Technologien
-
-**Backend:** - Node.js
-
-* Express
-* Sequelize + MySQL
-* JWT für die Authentifizierung
-* Bcrypt für die Passwort-Hashen
-
-**Frontend:** - React.js
-
-* React Router
-* React Bootstrap
+A professional task management solution supporting Multi-Tenancy (Companies) and Role-Based Access Control (RBAC). Manage companies, users, and tasks with granular permissions for Admins, Managers, and Employees.
 
 ---
 
-## ⚙️ Installation
+## 🌟 Key Features
 
-### Backend
+### 🏢 Multi-Tenancy & Company Management
+- **Isolation:** Each company operates in its own workspace.
+- **Admin Control:** Global Admins can manage all companies and their settings.
 
-1. Klonen Sie das Repository:
+### 👥 User & Role Management
+- **RBAC:** Three distinct roles: `Admin`, `Manager`, and `Employee`.
+- **Approval System:** New users require approval before gaining access.
+- **Profile Management:** Users can manage their own profiles and avatars.
 
-```bash
-git clone https://github.com/YaroslavOstapenko/TaskManager.git
-cd admin-service
-
-```
-
-2. Installieren Sie die Abhängigkeiten:
-
-```bash
-npm install
-
-```
-
-3. Erstellen Sie die MySQL-Datenbank:
-
-```sql
-CREATE DATABASE taskmanager
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
-
-```
-
-4. Erstellen und konfigurieren Sie die Datei `.env` im `backend`-Stammverzeichnis (Beispiel `admin-service`):
-
-```
-PORT=5000
-DB_HOST=localhost
-DB_USER=ihr_db_benutzer
-DB_PASS=ihr_db_passwort
-DB_NAME=taskmanager
-JWT_SECRET=supersecretkey
-UPLOAD_DIR=uploads
-
-```
-
-5. Starten Sie den Server:
-
-```bash
-npm start
-
-```
+### 📝 Task Tracking
+- **Lifecycle:** Track tasks through `Pending`, `In Progress`, and `Done` statuses.
+- **Attachments:** Securely upload, view, and delete files linked to specific tasks.
+- **Assignment:** Assign tasks to specific employees within the same company.
 
 ---
 
-### Frontend
+## 🛠 Tech Stack
 
-1. Wechseln Sie in den Frontend-Ordner:
-
-```bash
-cd admin-client
-
-```
-
-2. Installieren Sie die Abhängigkeiten:
-
-```bash
-npm install
-
-```
-
-3. Starten Sie den Client:
-
-```bash
-npm start
-
-```
-
-Die Anwendung wird unter der Adresse: `http://localhost:3000` erreichbar sein.
+| Layer | Technology |
+| :--- | :--- |
+| **Backend** | Node.js, Express |
+| **ORM** | Sequelize (MySQL) |
+| **Frontend** | React.js, React Bootstrap |
+| **Authentication** | JSON Web Tokens (JWT) & Bcrypt |
+| **File Handling** | Multer / Local Storage |
 
 ---
 
-## 🔑 Benutzerrollen
+## 🎥 Video Demonstration
 
-| Rolle | Verfügbare Bereiche |
-| --- | --- |
-| Admin | Unternehmen, Benutzer, Aufgaben |
-| Manager | Benutzer, Aufgaben |
-| Employee | Aufgaben |
+Check out the full workflow and features in the demo video:
+
+📺 **[Watch Task Manager Demo](https://youtu.be/2loxLhMpUbs)**
 
 ---
 
-## 📝 Funktionen
+## 🔑 Role Permissions
 
-### Benutzer
-
-* Registrierung des Administrators (Backend: `/auth/register-admin`)
-* Login (`/auth/login`)
-* Profilansicht und Bearbeitung von Daten
-* Hinzufügen neuer Mitarbeiter (Admin/Manager)
-* Änderung der Benutzerrolle
-* Freigabe (Approval) neuer Benutzer
-* Löschen von Benutzern
-
-### Unternehmen
-
-* Erstellung eines Unternehmens (Admin)
-* Anzeige von Unternehmensinformationen
-* Bearbeitung des Unternehmensnamens (nur Eigentümer)
-* Liste aller Unternehmen (Admin)
-
-### Aufgaben
-
-* Erstellung von Aufgaben (Manager/Admin)
-* Zuweisung von Aufgaben an Mitarbeiter
-* Änderung des Aufgabenstatus (`pending`, `in_progress`, `done`)
-* Löschen von Aufgaben (Manager/Admin)
-* Anhängen von Dateien an Aufgaben
-* Anzeigen von Aufgabendateien
+| Feature | Admin | Manager | Employee |
+| :--- | :---: | :---: | :---: |
+| Manage Companies | ✅ | ❌ | ❌ |
+| Manage Users | ✅ | ✅ | ❌ |
+| Create/Delete Tasks | ✅ | ✅ | ❌ |
+| Update Task Status | ✅ | ✅ | ✅ |
+| View Own Tasks | ✅ | ✅ | ✅ |
 
 ---
 
-## 🔗 API-Endpunkte
+## 📡 API Endpoints (Core)
 
-### Auth (Authentifizierung)
+### Authentication
+- `POST /auth/register-admin` – Register initial admin
+- `POST /auth/login` – Secure login & JWT generation
 
-* `POST /auth/register-admin` — Administrator registrieren
-* `POST /auth/login` — Einloggen
-
-### Users (Benutzer)
-
-* `GET /users` — Liste der Benutzer des Unternehmens
-* `GET /users/me` — Aktueller Benutzer
-* `POST /users/add` — Benutzer hinzufügen
-* `PATCH /users/approve/:id` — Benutzer genehmigen
-* `PATCH /users/role/:id` — Rolle ändern
-* `DELETE /users/:id` — Benutzer löschen
-
-### Company (Unternehmen)
-
-* `GET /users/company` — Informationen über das Unternehmen
-* `POST /users/company/create` — Unternehmen erstellen
-* `PUT /users/companyEdit` — Unternehmen bearbeiten
-* `GET /users/companies` — Liste aller Unternehmen
-
-### Tasks (Aufgaben)
-
-* `GET /tasks` — Liste aller Aufgaben
-* `POST /tasks` — Aufgabe erstellen
-* `PATCH /tasks/:id/status` — Status ändern
-* `DELETE /tasks/:id` — Aufgabe löschen
-* `POST /tasks/:id/file` — Datei anhängen
-* `GET /tasks/:id/files` — Dateiliste anzeigen
-* `DELETE /tasks/:id/file` — Datei löschen
+### Tasks & Files
+- `GET /tasks` – List company tasks
+- `POST /tasks` – Create new task
+- `PATCH /tasks/:id/status` – Transition task state
+- `POST /tasks/:id/file` – Upload attachment
 
 ---
-
-## 🎥 Demonstration
-
-Hier können Sie ein Video der Anwendung in Aktion sehen:
-
-* [Task Management Demo](https://youtu.be/2loxLhMpUbs)
-
----
-
-## 🛡️ Sicherheit
-
-* Passwörter werden verschlüsselt gespeichert (bcrypt)
-* Authentifizierung über JWT
-* Rollenprüfung für den API-Zugriff
-* Nur der Unternehmenseigentümer kann Unternehmensdaten bearbeiten
-
----
-
-## 💡 Lokaler Start
-
-1. Starten Sie MySQL und erstellen Sie die Datenbank.
-2. Konfigurieren Sie die `.env` Datei (siehe oben).
-3. Starten Sie das Backend (`npm start`).
-4. Starten Sie das Frontend (`npm start`).
-5. Registrieren Sie einen Administrator, erstellen Sie ein Unternehmen und beginnen Sie mit dem Hinzufügen von Benutzern und Aufgaben.
